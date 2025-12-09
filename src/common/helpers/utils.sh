@@ -4,7 +4,7 @@
 function get_python_bin() {
 	local python_bin="python3"
 
-	for version in 3.13 3.12 3.11 3.10 3.9; do
+	for version in 3.12 3.11 3.10 3.9; do
 		if command -v "python${version}" >/dev/null 2>&1; then
 			python_bin="python${version}"
 			break
