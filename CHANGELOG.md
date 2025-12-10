@@ -17,6 +17,7 @@
 - [UI] Enhance session management with Redis support and configurable session lifetime
 - [UI] Renamed "Global Configuration" to "Global Settings" in the web UI for clarity
 - [LINUX] Support Fedora 43
+- [LINUX] Update version retrieval for RPM packaging to ensure correct sorting for release candidates
 - [DOCS] Add documentation about the new logging settings and how to configure them
 - [DOCS] Update database compatibility matrix
 - [DEPS] Update lua-resty-session version to v4.1.5
