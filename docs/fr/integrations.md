@@ -3575,7 +3575,7 @@ services:
           - "node.role == worker"
 
   bw-redis:
-    image: redis:7-alpine
+    image: redis:8-alpine
     restart: "unless-stopped"
     networks:
       - bw-universe
@@ -3868,7 +3868,7 @@ resource "bunkerweb_global_config_setting" "rate_limit" {
 # Service principal
 resource "bunkerweb_service" "webapp" {
   server_name = "webapp.example.com"
-  
+
   variables = {
     upstream          = "10.0.1.10:8080"
     mode              = "production"
@@ -3881,7 +3881,7 @@ resource "bunkerweb_service" "webapp" {
 # Service API avec configuration différente
 resource "bunkerweb_service" "api" {
   server_name = "api.example.com"
-  
+
   variables = {
     upstream        = "10.0.1.20:3000"
     mode            = "production"
