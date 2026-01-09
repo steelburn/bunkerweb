@@ -152,9 +152,9 @@
     },
     {
       "id": "lua-resty-session",
-      "name": "lua-resty-session v4.1.4",
+      "name": "lua-resty-session v4.1.5",
       "url": "https://github.com/bungle/lua-resty-session.git",
-      "commit": "f0aa06747e21055a18ed43ec83f8f333c5473010",
+      "commit": "505ff720957f61f2ecd2e6e9fe11c66530a42807",
       "post_install": "rm -r src/deps/src/lua-resty-session/t"
     },
     {
@@ -193,9 +193,9 @@
     },
     {
       "id": "luajit",
-      "name": "LuaJIT v2.1-20251030",
+      "name": "LuaJIT v2.1-20251229",
       "url": "https://github.com/openresty/luajit2.git",
-      "commit": "71fae383f6c4637d64b03a6d0ec76ae8c19d6821",
+      "commit": "87e2724a33bf524d0995626d404d0ea830a0c619",
       "post_install": "rm -r src/deps/src/luajit/t"
     },
     {
@@ -237,20 +237,20 @@
       "name": "ModSecurity v3.0.14",
       "url": "https://github.com/owasp-modsecurity/ModSecurity.git",
       "commit": "a555e5a44573e50f04ad997b3b24c214c42f8e29",
-      "post_install": "rm src/deps/src/modsecurity/.gitmodules && rm -rf src/deps/src/modsecurity/others/libinjection src/deps/src/modsecurity/others/mbedtls && patch --forward src/deps/src/modsecurity/configure.ac src/deps/misc/modsecurity.patch || rm src/deps/src/modsecurity/configure.ac.orig src/deps/src/modsecurity/configure.ac.rej"
+      "post_install": "rm src/deps/src/modsecurity/.gitmodules && rm -rf src/deps/src/modsecurity/others/libinjection src/deps/src/modsecurity/others/mbedtls && patch --forward src/deps/src/modsecurity/configure.ac src/deps/misc/modsecurity.patch || rm src/deps/src/modsecurity/configure.ac.orig src/deps/src/modsecurity/configure.ac.rej && patch --forward src/deps/src/modsecurity/src/transaction.cc src/deps/misc/modsecurity-transaction-cc.patch || rm src/deps/src/modsecurity/src/transaction.cc.orig src/deps/src/modsecurity/src/transaction.cc.rej && patch --forward src/deps/src/modsecurity/headers/modsecurity/transaction.h src/deps/misc/modsecurity-transaction-h.patch || rm src/deps/src/modsecurity/headers/modsecurity/transaction.h.orig src/deps/src/modsecurity/headers/modsecurity/transaction.h.rej"
     },
     {
       "id": "modsecurity-nginx",
-      "name": "ModSecurity-nginx v1.0.3",
+      "name": "ModSecurity-nginx v1.0.4",
       "url": "https://github.com/owasp-modsecurity/ModSecurity-nginx.git",
-      "commit": "d59e4ad121df702751940fd66bcc0b3ecb51a079",
-      "post_install": "rm -r src/deps/src/modsecurity-nginx/tests && patch --forward src/deps/src/modsecurity-nginx/src/ngx_http_modsecurity_log.c src/deps/misc/modsecurity-nginx.patch || rm src/deps/src/modsecurity-nginx/src/ngx_http_modsecurity_log.c.orig src/deps/src/modsecurity-nginx/src/ngx_http_modsecurity_log.c.rej && patch --forward src/deps/src/modsecurity-nginx/src/ngx_http_modsecurity_common.h src/deps/misc/ngx_http_modsecurity_common.h.patch || rm src/deps/src/modsecurity-nginx/src/ngx_http_modsecurity_common.h.orig src/deps/src/modsecurity-nginx/src/ngx_http_modsecurity_common.h.rej && patch --forward src/deps/src/modsecurity-nginx/src/ngx_http_modsecurity_module.c src/deps/misc/ngx_http_modsecurity_module.c.patch || rm src/deps/src/modsecurity-nginx/src/ngx_http_modsecurity_module.c.orig src/deps/src/modsecurity-nginx/src/ngx_http_modsecurity_module.c.rej && patch --forward src/deps/src/modsecurity-nginx/config src/deps/misc/modsecurity-nginx-config.patch || rm src/deps/src/modsecurity-nginx/config.orig src/deps/src/modsecurity-nginx/config.rej"
+      "commit": "3f4b57df10ce43b1f1c722141f7621dc64838be8",
+      "post_install": "rm -r src/deps/src/modsecurity-nginx/tests && patch --forward src/deps/src/modsecurity-nginx/src/ngx_http_modsecurity_log.c src/deps/misc/modsecurity-nginx-log.patch || rm src/deps/src/modsecurity-nginx/src/ngx_http_modsecurity_log.c.orig src/deps/src/modsecurity-nginx/src/ngx_http_modsecurity_log.c.rej && patch --forward src/deps/src/modsecurity-nginx/src/ngx_http_modsecurity_common.h src/deps/misc/modsecurity-nginx-common.patch || rm src/deps/src/modsecurity-nginx/src/ngx_http_modsecurity_common.h.orig src/deps/src/modsecurity-nginx/src/ngx_http_modsecurity_common.h.rej && patch --forward src/deps/src/modsecurity-nginx/src/ngx_http_modsecurity_module.c src/deps/misc/modsecurity-nginx-module.patch || rm src/deps/src/modsecurity-nginx/src/ngx_http_modsecurity_module.c.orig src/deps/src/modsecurity-nginx/src/ngx_http_modsecurity_module.c.rej && patch --forward src/deps/src/modsecurity-nginx/config src/deps/misc/modsecurity-nginx-config.patch || rm src/deps/src/modsecurity-nginx/config.orig src/deps/src/modsecurity-nginx/config.rej"
     },
     {
       "id": "nginx",
-      "name": "Nginx v1.28.0",
+      "name": "Nginx v1.28.1",
       "url": "https://github.com/nginx/nginx.git",
-      "commit": "481d28cb4e04c8096b9b6134856891dc52ecc68f",
+      "commit": "95078974cfe998ec4095ac2c504c5c92bbc9a326",
       "post_install": "rm -r src/deps/src/nginx/docs"
     },
     {
@@ -282,9 +282,9 @@
     },
     {
       "id": "zlib",
-      "name": "zlib v1.3.1",
+      "name": "zlib v1.3.1.2",
       "url": "https://github.com/madler/zlib.git",
-      "commit": "51b7f2abdade71cd9bb0e7a373ef2610ec6f9daf",
+      "commit": "570720b0c24f9686c33f35a1b3165c1f568b96be",
       "post_install": "rm -r src/deps/src/zlib/doc src/deps/src/zlib/examples"
     }
   ]

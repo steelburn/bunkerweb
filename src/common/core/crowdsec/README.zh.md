@@ -68,7 +68,7 @@ CrowdSec 是一种现代的开源安全引擎，它基于行为分析和社区�
     对于基于容器的集成，我们建议将 BunkerWeb 容器的日志重定向到 syslog 服务，以便 CrowdSec 可以轻松访问它们。这是一个 syslog-ng 的示例配置，它会将来自 BunkerWeb 的原始日志存储到本地的 `/var/log/bunkerweb.log` 文件中：
 
     ```syslog
-    @version: 4.8
+    @version: 4.10
 
     source s_net {
         udp(
@@ -82,7 +82,7 @@ CrowdSec 是一种现代的开源安全引擎，它基于行为分析和社区�
     };
 
     destination d_file {
-        file("/var/log/bunkerweb.log" template(t_imp));
+        file("/var/log/bunkerweb.log" template(t_imp) logrotate(enable(yes), size(100MB), rotations(7)));
     };
 
     log {
@@ -103,7 +103,7 @@ CrowdSec 是一种现代的开源安全引擎，它基于行为分析和社区�
     services:
       bunkerweb:
         # 这是将用于在调度器中识别实例的名称
-        image: bunkerity/bunkerweb:1.6.6
+        image: bunkerity/bunkerweb:1.6.7
         ports:
           - "80:8080/tcp"
           - "443:8443/tcp"
@@ -120,7 +120,7 @@ CrowdSec 是一种现代的开源安全引擎，它基于行为分析和社区�
             syslog-address: "udp://10.20.30.254:514" # syslog 服务的 IP 地址
 
       bw-scheduler:
-        image: bunkerity/bunkerweb-scheduler:1.6.6
+        image: bunkerity/bunkerweb-scheduler:1.6.7
         environment:
           <<: *bw-env
           BUNKERWEB_INSTANCES: "bunkerweb" # 确保设置正确的实例名称
@@ -154,7 +154,7 @@ CrowdSec 是一种现代的开源安全引擎，它基于行为分析和社区�
           - bw-db
 
       crowdsec:
-        image: crowdsecurity/crowdsec:v1.7.3 # 使用最新版本，但为了更好的稳定性和安全性，请始终固定版本
+        image: crowdsecurity/crowdsec:v1.7.4 # 使用最新版本，但为了更好的稳定性和安全性，请始终固定版本
         volumes:
           - cs-data:/var/lib/crowdsec/data # 持久化 CrowdSec 数据
           - bw-logs:/var/log:ro # BunkerWeb 的日志，供 CrowdSec 解析
@@ -168,7 +168,7 @@ CrowdSec 是一种现代的开源安全引擎，它基于行为分析和社区�
           - bw-universe
 
       syslog:
-        image: balabit/syslog-ng:4.9.0
+        image: balabit/syslog-ng:4.10.2
         cap_add:
           - NET_BIND_SERVICE  # 绑定到低端口
           - NET_BROADCAST  # 发送广播

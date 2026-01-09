@@ -2,13 +2,16 @@
 
 from concurrent.futures import ProcessPoolExecutor
 from contextlib import suppress
+from functools import lru_cache
 from importlib import import_module
 from glob import glob
 from math import ceil
-from os import cpu_count, getenv
+import multiprocessing as mp
+from os import cpu_count
 from os.path import basename, join, sep
 from pathlib import Path
 from random import choice
+from ssl import PROTOCOL_TLS_SERVER, SSLContext
 from string import ascii_letters, digits
 from sys import path as sys_path
 from typing import Any, Dict, List, Optional, Type
@@ -18,12 +21,54 @@ deps_path = join("usr", "share", "bunkerweb", "deps", "python")
 if deps_path not in sys_path:
     sys_path.append(deps_path)
 
-from logger import setup_logger  # type: ignore
+from logger import getLogger  # type: ignore
 
 from jinja2 import Environment, FileSystemBytecodeCache, FileSystemLoader, Undefined
 
 # Configure logging
-logger = setup_logger("Templator", getenv("CUSTOM_LOG_LEVEL", getenv("LOG_LEVEL", "INFO")))
+logger = getLogger("TEMPLATOR")
+
+
+@lru_cache(maxsize=32)
+def _supports_tls_group(name: str) -> bool:
+    try:
+        ctx = SSLContext(PROTOCOL_TLS_SERVER)
+        ctx.set_ecdh_curve(name)
+        return True
+    except BaseException:
+        return False
+
+
+@lru_cache(maxsize=1)
+def _best_ssl_ecdh_curve() -> Optional[str]:
+    preferred = ("X25519MLKEM768", "X25519", "prime256v1", "secp384r1")
+    aliases = {"prime256v1": ("P-256",), "secp384r1": ("P-384",)}
+
+    selected = []
+    for name in preferred:
+        if _supports_tls_group(name):
+            selected.append(name)
+            continue
+        for alias in aliases.get(name, []):
+            if _supports_tls_group(alias):
+                selected.append(alias)
+                break
+
+    if not selected:
+        return None
+
+    return ":".join(selected)
+
+
+def resolve_ssl_ecdh_curve(value: str, fallback: str = "X25519:prime256v1:secp384r1") -> str:
+    if value and value != "auto":
+        return value
+
+    best_curve = _best_ssl_ecdh_curve()
+    if best_curve:
+        return best_curve
+
+    return fallback
 
 
 class ConfigurableCustomUndefined(Undefined):
@@ -177,6 +222,13 @@ def create_custom_undefined_class(default_config: Dict[str, Any]):
     return ConfigurableCustomUndefined
 
 
+def _ensure_fork_start_method() -> None:
+    """Force fork start method when available so child processes inherit globals."""
+    with suppress(RuntimeError):
+        if mp.get_start_method(allow_none=True) != "fork":
+            mp.set_start_method("fork")
+
+
 class Templator:
     """A class to render configuration files using Jinja2 templates."""
 
@@ -245,16 +297,18 @@ class Templator:
             "random": Templator.random,
             "read_lines": Templator.read_lines,
             "import": import_module,
+            "resolve_ssl_ecdh_curve": resolve_ssl_ecdh_curve,
         }
 
     def render(self) -> None:
         """Render the templates based on the provided configuration."""
+        _ensure_fork_start_method()
         self._render_global()
         servers = [self._config.get("SERVER_NAME", "www.example.com").strip()]
         if self._config.get("MULTISITE", "no") == "yes":
-            servers = self._config.get("SERVER_NAME", "www.example.com").strip().split(" ")
+            servers = self._config.get("SERVER_NAME", "www.example.com").strip().split()
 
-        max_workers = min(ceil(max(1, (cpu_count() or 1) * 0.75)), len(servers))
+        max_workers = min(ceil(max(1, (cpu_count() or 1) * 0.75)), len(servers)) or 1
         with ProcessPoolExecutor(max_workers=max_workers) as executor:
             futures = [executor.submit(self._render_server, server) for server in servers]
             for future in futures:
@@ -390,7 +444,7 @@ class Templator:
         template_vars["all"] = self._full_config
         template_vars.update(self._config)
 
-        max_workers = min(ceil(max(1, (cpu_count() or 1) * 0.75)), len(templates))
+        max_workers = min(ceil(max(1, (cpu_count() or 1) * 0.75)), len(templates)) or 1
         with ProcessPoolExecutor(max_workers=max_workers) as executor:
             futures = [executor.submit(self._render_template, template, template_vars) for template in templates]
             for future in futures:

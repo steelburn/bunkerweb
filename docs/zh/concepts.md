@@ -96,7 +96,7 @@ app2.example.com_WHITELIST_COUNTRY=FR
 app3.example.com_USE_BAD_BEHAVIOR=no
 ```
 
-请注意，在使用 Web 用户界面时，多站点模式是隐式的。您可以选择直接将配置应用于您的服务，也可以设置一个全局配置，该配置将应用于所有服务（您仍然可以对特定服务直接应用例外）：
+请注意，在使用 Web 用户界面时，多站点模式是隐式的。您可以选择直接将配置应用于您的服务，也可以设置全局设置并将其应用于所有服务（您仍然可以对特定服务直接应用例外）：
 
 <figure markdown>
   ![概述](assets/img/ui-multisite.png){ align=center, width="600" }
@@ -105,7 +105,7 @@ app3.example.com_USE_BAD_BEHAVIOR=no
 
 !!! info "更进一步"
 
-    您将在文档的[高级用法](advanced.md)和仓库的 [examples](https://github.com/bunkerity/bunkerweb/tree/v1.6.6/examples) 目录中找到多站点模式的具体示例。
+    您将在文档的[高级用法](advanced.md)和仓库的 [examples](https://github.com/bunkerity/bunkerweb/tree/v1.6.7/examples) 目录中找到多站点模式的具体示例。
 
 ## 自定义配置 {#custom-configurations}
 
@@ -126,7 +126,7 @@ BunkerWeb 的另一个不可或缺的组件是 ModSecurity Web 应用程序防�
 
 !!! info "更进一步"
 
-    您将在文档的[高级用法](advanced.md#custom-configurations)和仓库的 [examples](https://github.com/bunkerity/bunkerweb/tree/v1.6.6/examples) 目录中找到自定义配置的具体示例。
+    您将在文档的[高级用法](advanced.md#custom-configurations)和仓库的 [examples](https://github.com/bunkerity/bunkerweb/tree/v1.6.7/examples) 目录中找到自定义配置的具体示例。
 
 ## 数据库
 
@@ -163,15 +163,15 @@ BunkerWeb 将其当前配置安全地存储在后端数据库中，该数据库�
 
 ### 数据库兼容性矩阵
 
-| 集成             | PostgreSQL                   | MariaDB            | MySQL             | SQLite |
-| :--------------- | :--------------------------- | :----------------- | :---------------- | :----- |
-| **Docker**       | ✅ `v17` 及更早版本 (❌ `v18`) | ✅ `v11` 及更早版本 | ✅ `v9` 及更早版本 | ✅ 支持 |
-| **Kubernetes**   | ✅ `v17` 及更早版本 (❌ `v18`) | ✅ `v11` 及更早版本 | ✅ `v9` 及更早版本 | ✅ 支持 |
-| **Autoconf**     | ✅ `v17` 及更早版本 (❌ `v18`) | ✅ `v11` 及更早版本 | ✅ `v9` 及更早版本 | ✅ 支持 |
-| **Linux 软件包** | 见下方说明                   | 见下方说明         | 见下方说明        | ✅ 支持 |
+| 集成             | PostgreSQL                         | MariaDB            | MySQL             | SQLite |
+| :--------------- | :--------------------------------- | :----------------- | :---------------- | :----- |
+| **Docker**       | ✅ `v18` 及更早版本（all-in-one：✅ `v17`） | ✅ `v11` 及更早版本 | ✅ `v9` 及更早版本 | ✅ 支持 |
+| **Kubernetes**   | ✅ `v18` 及更早版本                 | ✅ `v11` 及更早版本 | ✅ `v9` 及更早版本 | ✅ 支持 |
+| **Autoconf**     | ✅ `v18` 及更早版本                 | ✅ `v11` 及更早版本 | ✅ `v9` 及更早版本 | ✅ 支持 |
+| **Linux 软件包** | 见下方说明                       | 见下方说明         | 见下方说明        | ✅ 支持 |
 
 !!! info "说明"
-    - **PostgreSQL**: 不支持 `v18`，因为我们提供的 Alpine 基础镜像仅包含 `v17` 客户端软件包。
+    - **PostgreSQL**: 基于 Alpine 的软件包现在包含 `v18` 客户端，因此默认支持 `v18` 及更早版本；all-in-one 镜像仍然使用 `v17` 客户端，因此 `v18` 在该镜像中尚不受支持。
     - **Linux**: 支持情况取决于您的发行版软件包。如果需要，您可以从供应商仓库手动安装数据库客户端（RHEL 通常需要这样做）。
     - **SQLite**: 随软件包一起提供，可立即使用。
 

@@ -1,4 +1,4 @@
-FROM python:3.13-alpine@sha256:e5fa639e49b85986c4481e28faa2564b45aa8021413f31026c3856e5911618b1 AS builder
+FROM python:3.13-alpine@sha256:e7e041128ffc3e3600509f508e44d34ab08ff432bdb62ec508d01dfc5ca459f7 AS builder
 
 # Export var for specific actions on linux/arm/v7
 ARG TARGETPLATFORM
@@ -36,7 +36,7 @@ COPY src/common/utils utils
 COPY src/scheduler scheduler
 COPY src/VERSION VERSION
 
-FROM python:3.13-alpine@sha256:e5fa639e49b85986c4481e28faa2564b45aa8021413f31026c3856e5911618b1
+FROM python:3.13-alpine@sha256:e7e041128ffc3e3600509f508e44d34ab08ff432bdb62ec508d01dfc5ca459f7
 
 # Set default umask to prevent huge recursive chmod increasing the final image size
 RUN umask 027
@@ -47,8 +47,7 @@ RUN apk add --no-cache bash unzip libgcc libstdc++ libpq openssl libmagic mariad
   adduser -h /usr/share/bunkerweb/scheduler -g scheduler -s /sbin/nologin -G scheduler -D -H -u 101 --disabled-password scheduler
 
 # Fix CVEs
-RUN apk add --no-cache "libpq>=17.7-r0" "postgresql17-client>=17.7-r0" # CVE-2025-12817 CVE-2025-12818
-RUN apk add --no-cache "busybox>=1.37.0-r20" "busybox-binsh>=1.37.0-r20" "ssl_client>=1.37.0-r20" # CVE-2024-58251 CVE-2025-46394
+# There are no CVEs for the following packages
 
 # Copy dependencies
 COPY --from=builder --chown=0:101 --chmod=550 /usr/share/bunkerweb /usr/share/bunkerweb
@@ -77,7 +76,7 @@ COPY --chown=root:scheduler --chmod=770 src/bw/misc/asn.mmdb /var/tmp/bunkerweb/
 COPY --chown=root:scheduler --chmod=770 src/bw/misc/country.mmdb /var/tmp/bunkerweb/country.mmdb
 
 LABEL maintainer="Bunkerity <contact@bunkerity.com>"
-LABEL version="1.6.6"
+LABEL version="1.6.7"
 LABEL url="https://www.bunkerweb.io"
 LABEL bunkerweb.type="scheduler"
 
